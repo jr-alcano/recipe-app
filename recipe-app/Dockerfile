@@ -13,9 +13,12 @@ WORKDIR /app
 COPY server/ ./
 COPY --from=client-build /app/client/build client/build
 
+# Install server dependencies
 RUN npm install
 
+# Set environment and expose port
 ENV PORT=3001
 EXPOSE 3001
 
-CMD ["node", "index.js"]
+# Run the server using the start script in server/package.json
+CMD ["npm", "start"]
