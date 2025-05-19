@@ -1,8 +1,8 @@
 // client/src/pages/SavedRecipesPage.js
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import api from "../api";
 
 /** Page to display all recipes saved by the logged-in user */
 function SavedRecipesPage() {
@@ -20,7 +20,7 @@ function SavedRecipesPage() {
       }
 
       try {
-        const res = await axios.get(`http://localhost:3001/recipes/user/${userId}`, {
+        const res = await api.get(`/recipes/user/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -39,7 +39,7 @@ function SavedRecipesPage() {
 
   async function handleDelete(recipeId) {
     try {
-      await axios.delete(`http://localhost:3001/recipes/${recipeId}`, {
+      await api.delete(`/recipes/${recipeId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRecipes(recipes.filter(r => r.id !== recipeId));

@@ -1,8 +1,8 @@
 // client/src/pages/RecipeSearchPage.js
 
 import React, { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import api from "../api";
 
 /** Page for searching and saving recipes */
 function RecipeSearchPage() {
@@ -15,7 +15,7 @@ function RecipeSearchPage() {
     setError(null);
 
     try {
-      const res = await axios.get(`http://localhost:3001/recipes/search`, {
+      const res = await api.get(`/recipes/search`, {
         params: { query },
       });
       setResults(res.data);
@@ -29,8 +29,8 @@ function RecipeSearchPage() {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await axios.post(
-        `http://localhost:3001/recipes/save`,
+      const res = await api.post(
+        `/recipes/save`,
         {
           recipe_id: recipe.id,
           title: recipe.title,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 
 function RecipeDetailPage() {
   const { id } = useParams(); // spoonacular ID
@@ -17,7 +17,7 @@ function RecipeDetailPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get(`http://localhost:3001/recipes/${id}/details`);
+        const res = await api.get(`/recipes/${id}/details`);
         setRecipe(res.data);
       } catch (err) {
         console.error("Failed to fetch recipe details:", err);
@@ -26,7 +26,7 @@ function RecipeDetailPage() {
 
       if (token && savedId) {
         try {
-          const res = await axios.get(`http://localhost:3001/recipes/${savedId}/notes`, {
+          const res = await api.get(`/recipes/${savedId}/notes`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const latestNote = res.data[0]?.content || "";
@@ -46,8 +46,8 @@ function RecipeDetailPage() {
       return;
     }
     try {
-      await axios.post(
-        `http://localhost:3001/recipes/${savedId}/note`,
+      await api.post(
+        `/recipes/${savedId}/note`,
         { content: noteContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );

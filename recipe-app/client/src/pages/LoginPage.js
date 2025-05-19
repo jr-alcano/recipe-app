@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../api";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -23,7 +23,7 @@ function LoginPage() {
     setSuccess(false);
 
     try {
-      const res = await axios.post("http://localhost:3001/auth/login", formData);
+      const res = await api.post("/auth/login", formData);
       console.log("Login response:", res.data);
 
       localStorage.setItem("token", res.data.token);
@@ -40,13 +40,12 @@ function LoginPage() {
   }
 
   return (
-    <div className="form-container">
+    <div>
       <h2>Login</h2>
-      {success && <p className="success-msg">Login successful!</p>}
-      {error && <p className="error-msg">{error}</p>}
+      {success && <p style={{ color: "green" }}>Login successful!</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
-          className="form-input"
           type="text"
           name="username"
           placeholder="Username"
@@ -55,7 +54,6 @@ function LoginPage() {
           required
         /><br />
         <input
-          className="form-input"
           type="password"
           name="password"
           placeholder="Password"
@@ -63,7 +61,7 @@ function LoginPage() {
           onChange={handleChange}
           required
         /><br />
-        <button className="form-btn" type="submit">Login</button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );
