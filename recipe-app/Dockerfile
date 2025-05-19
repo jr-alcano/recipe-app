@@ -4,22 +4,23 @@ WORKDIR /app
 COPY client/ ./client
 RUN cd client && npm install && npm run build
 
-# Stage 2: Setup the backend
+# Stage 2: Setup the backend server
 FROM node:18
-
-WORKDIR /app
-
-# Copy backend files (your entire server folder into /app/server)
-COPY server/ ./server
-
-# Copy client build output into the backend server directory
-COPY --from=client-build /app/client/build ./server/client/build
 
 # Set working directory to /app/server
 WORKDIR /app/server
+
+# Copy server code into the container
+COPY server/ ./
+
+# Copy built React frontend into /app/server/build
+COPY --from=client-build /app/client/build ./build
+
+# Install backend dependencies
 RUN npm install
 
 ENV PORT=3001
 EXPOSE 3001
 
+# Start the Express server
 CMD ["node", "index.js"]
