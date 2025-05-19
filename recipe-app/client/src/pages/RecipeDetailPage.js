@@ -24,7 +24,6 @@ function RecipeDetailPage() {
         setError("Could not load recipe details.");
       }
 
-      // fetch the latest saved note for this recipe (if exists)
       if (token && savedId) {
         try {
           const res = await axios.get(`http://localhost:3001/recipes/${savedId}/notes`, {
@@ -40,7 +39,6 @@ function RecipeDetailPage() {
     fetchData();
   }, [id, savedId, token]);
 
-  // save or update the current note
   async function handleSaveNote(evt) {
     evt.preventDefault();
     if (!savedId) {
@@ -64,14 +62,14 @@ function RecipeDetailPage() {
   if (!recipe) return <p>Loading...</p>;
 
   return (
-    <div>
+    <div className="recipe-detail-container">
       <h2>{recipe.title}</h2>
-      <img src={recipe.image} alt={recipe.title} width="300" />
+      <img src={recipe.image} alt={recipe.title} className="recipe-image" />
       <p><strong>Ready in:</strong> {recipe.readyInMinutes} minutes</p>
       <p><strong>Servings:</strong> {recipe.servings}</p>
 
       <h3>Ingredients:</h3>
-      <ul>
+      <ul className="ingredients-list">
         {recipe.ingredients.map((i, idx) => (
           <li key={idx}>{i.amount} {i.unit} {i.name}</li>
         ))}
@@ -79,14 +77,14 @@ function RecipeDetailPage() {
 
       <h3>Instructions:</h3>
       <div
+        className="instructions"
         dangerouslySetInnerHTML={{
           __html: recipe.instructions || "<p>No instructions.</p>",
         }}
       />
 
-      {/* Freeform note editing section */}
       {token && savedId && (
-        <div>
+        <div className="notes-section">
           <h3>Your Note</h3>
           <form onSubmit={handleSaveNote}>
             <textarea
@@ -95,9 +93,10 @@ function RecipeDetailPage() {
               rows={6}
               cols={60}
               placeholder="Add your note here..."
+              className="note-textarea"
             />
             <br />
-            <button type="submit">Save Note</button>
+            <button type="submit" className="note-save-btn">Save Note</button>
           </form>
         </div>
       )}
