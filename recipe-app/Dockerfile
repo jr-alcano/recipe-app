@@ -4,19 +4,19 @@ WORKDIR /app
 COPY client/ ./client
 RUN cd client && npm install && npm run build
 
-# Stage 2: Set up the server and serve built frontend
+# Stage 2: Setup the backend
 FROM node:18
 
-# Put everything under /app
 WORKDIR /app
 
-# Copy contents of server/ into /app (not into /app/server!)
-COPY server/ ./
+# Copy backend files (your entire server folder into /app/server)
+COPY server/ ./server
 
-# Copy client build files into the server's static folder
-COPY --from=client-build /app/client/build ./client/build
+# Copy client build output into the backend server directory
+COPY --from=client-build /app/client/build ./server/client/build
 
-# Install backend dependencies
+# Set working directory to /app/server
+WORKDIR /app/server
 RUN npm install
 
 ENV PORT=3001
