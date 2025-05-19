@@ -9,7 +9,6 @@ const API_KEY = process.env.SPOONACULAR_API_KEY;
 
 console.log("Starting to register recipe routes");
 
-// search for recipes by keyword
 try {
   console.log("Registering GET /search");
   router.get('/search', async (req, res, next) => {
@@ -45,7 +44,6 @@ try {
   console.error("Failed to register GET /search:", err);
 }
 
-// save a recipe to a user’s account
 try {
   console.log("Registering POST /save");
   router.post('/save', ensureLoggedIn, async (req, res, next) => {
@@ -73,7 +71,6 @@ try {
   console.error("Failed to register POST /save:", err);
 }
 
-// get all saved recipes for a user
 try {
   console.log("Registering GET /user/:id");
   router.get('/user/:id', ensureLoggedIn, async (req, res, next) => {
@@ -102,7 +99,6 @@ try {
   console.error("Failed to register GET /user/:id:", err);
 }
 
-// Get full recipe information by Spoonacular recipe ID
 try {
   console.log("Registering GET /:id/details");
   router.get('/:id/details', async (req, res, next) => {
@@ -140,7 +136,6 @@ try {
   console.error("Failed to register GET /:id/details:", err);
 }
 
-// get notes for a saved recipe
 try {
   console.log("Registering GET /:id/notes");
   router.get('/:id/notes', ensureLoggedIn, async (req, res, next) => {
@@ -174,7 +169,6 @@ try {
   console.error("Failed to register GET /:id/notes:", err);
 }
 
-// add a note to a saved recipe 
 try {
   console.log("Registering POST /:id/note");
   router.post('/:id/note', ensureLoggedIn, async (req, res, next) => {
@@ -212,7 +206,6 @@ try {
   console.error("Failed to register POST /:id/note:", err);
 }
 
-// delete a saved recipe by its ID
 try {
   console.log("Registering DELETE /:id");
   router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
