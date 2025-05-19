@@ -33,6 +33,12 @@ app.get('/users', async (req, res, next) => {
 app.use('/auth', authRoutes);
 app.use('/recipes', recipeRoutes);
 
-
+// DEBUG: Log all registered routes (for finding bad paths)
+console.log("Registered routes:");
+app._router.stack
+  .filter(r => r.route)
+  .forEach(r => {
+    console.log(r.route.path);
+  });
 
 module.exports = app;
