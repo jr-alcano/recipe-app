@@ -33,7 +33,7 @@ app.get('/users', async (req, res, next) => {
 app.use('/auth', authRoutes);
 app.use('/recipes', recipeRoutes);
 
-//  DEBUG: Log registered routes AFTER routes are set up
+/*/  DEBUG: Log registered routes AFTER routes are set up
 setTimeout(() => {
   console.log("Registered routes:");
   app._router.stack
@@ -41,6 +41,6 @@ setTimeout(() => {
     .forEach(r => {
       console.log(r.route.path);
     });
-}, 0);
+}, 0);*/
 
 module.exports = app;
