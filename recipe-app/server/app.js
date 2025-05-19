@@ -12,7 +12,7 @@ const app = express();
 
 // Set up dynamic CORS origin
 const CLIENT_ORIGIN = process.env.NODE_ENV === "production"
-  ? "https://<your-client-service>.up.railway.app" //replace
+  ? "recipe-app-client-production.up.railway.app" //replace
   : "http://localhost:3000";
 
 app.use(cors({
