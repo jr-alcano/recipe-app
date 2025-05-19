@@ -176,7 +176,7 @@ try {
       const { id } = req.params;
       const { content } = req.body;
       const userId = res.locals.user.id;
-
+3
       if (!content) {
         return res.status(400).json({ error: 'Missing note content' });
       }
