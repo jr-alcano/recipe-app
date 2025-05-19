@@ -4,22 +4,22 @@ WORKDIR /app
 COPY client/ ./client
 RUN cd client && npm install && npm run build
 
-# Stage 2: Set up the server and serve client build
+# Stage 2: Set up the server and serve built frontend
 FROM node:18
 
-# Make working dir /app/server to match what Railway expects
-WORKDIR /app/server
+# Put everything under /app
+WORKDIR /app
 
-# Copy the server files into /app/server
+# Copy contents of server/ into /app (not into /app/server!)
 COPY server/ ./
 
-# Copy client build into the appropriate location inside server
+# Copy client build files into the server's static folder
 COPY --from=client-build /app/client/build ./client/build
 
-# Install dependencies from server's package.json
+# Install backend dependencies
 RUN npm install
 
 ENV PORT=3001
 EXPOSE 3001
 
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
