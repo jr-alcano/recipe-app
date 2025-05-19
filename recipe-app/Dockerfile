@@ -7,18 +7,19 @@ RUN cd client && npm install && npm run build
 # Stage 2: Set up the server and serve client build
 FROM node:18
 
-WORKDIR /app
+# Make working dir /app/server to match what Railway expects
+WORKDIR /app/server
 
-# Copy server files and client build
+# Copy the server files into /app/server
 COPY server/ ./
-COPY --from=client-build /app/client/build client/build
 
-# Install server dependencies
+# Copy client build into the appropriate location inside server
+COPY --from=client-build /app/client/build ./client/build
+
+# Install dependencies from server's package.json
 RUN npm install
 
-# Set environment and expose port
 ENV PORT=3001
 EXPOSE 3001
 
-# Run the server using the start script in server/package.json
 CMD ["npm", "start"]
