@@ -85,8 +85,41 @@ router.get('/user/:id', ensureLoggedIn, async (req, res, next) => {
   }
 });
 
-// delete a saved recipe by its ID
-router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
+// Get full recipe information by Spoonacular recipe ID
+router.get('/:id/details', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/information`, {
+      params: {
+        apiKey: API_KEY
+      }
+    });
+
+    const r = response.data;
+
+    const recipeDetails = {
+      id: r.id,
+      title: r.title,
+      image: r.image,
+      readyInMinutes: r.readyInMinutes,
+      servings: r.servings,
+      instructions: r.instructions,
+      ingredients: r.extendedIngredients.map(i => ({
+        name: i.name,
+        amount: i.amount,
+        unit: i.unit
+      }))
+    };
+
+    return res.json(recipeDetails);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// get notes for a saved recipe
+router.get('/:id/notes', ensureLoggedIn, async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = res.locals.user.id;
@@ -97,12 +130,18 @@ router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
     );
 
     if (recipeCheck.rows.length === 0) {
-      return res.status(403).json({ error: 'Unauthorized delete attempt or recipe not found' });
+      return res.status(403).json({ error: 'Unauthorized to view notes for this recipe' });
     }
 
-    await db.query(`DELETE FROM saved_recipes WHERE id = $1`, [id]);
+    const result = await db.query(
+      `SELECT id, content, created_at
+       FROM notes
+       WHERE saved_recipe_id = $1
+       ORDER BY created_at DESC`,
+      [id]
+    );
 
-    return res.json({ message: 'Deleted successfully' });
+    return res.json(result.rows);
   } catch (err) {
     return next(err);
   }
@@ -141,8 +180,8 @@ router.post('/:id/note', ensureLoggedIn, async (req, res, next) => {
   }
 });
 
-// get notes for a saved recipe
-router.get('/:id/notes', ensureLoggedIn, async (req, res, next) => {
+// delete a saved recipe by its ID
+router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = res.locals.user.id;
@@ -153,54 +192,15 @@ router.get('/:id/notes', ensureLoggedIn, async (req, res, next) => {
     );
 
     if (recipeCheck.rows.length === 0) {
-      return res.status(403).json({ error: 'Unauthorized to view notes for this recipe' });
+      return res.status(403).json({ error: 'Unauthorized delete attempt or recipe not found' });
     }
 
-    const result = await db.query(
-      `SELECT id, content, created_at
-       FROM notes
-       WHERE saved_recipe_id = $1
-       ORDER BY created_at DESC`,
-      [id]
-    );
+    await db.query(`DELETE FROM saved_recipes WHERE id = $1`, [id]);
 
-    return res.json(result.rows);
+    return res.json({ message: 'Deleted successfully' });
   } catch (err) {
     return next(err);
   }
 });
-
-// Get full recipe information by Spoonacular recipe ID
-router.get('/:id/details', async (req, res, next) => {
-    try {
-      const { id } = req.params;
-  
-      const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/information`, {
-        params: {
-          apiKey: API_KEY
-        }
-      });
-  
-      const r = response.data;
-  
-      const recipeDetails = {
-        id: r.id,
-        title: r.title,
-        image: r.image,
-        readyInMinutes: r.readyInMinutes,
-        servings: r.servings,
-        instructions: r.instructions,
-        ingredients: r.extendedIngredients.map(i => ({
-          name: i.name,
-          amount: i.amount,
-          unit: i.unit
-        }))
-      };
-  
-      return res.json(recipeDetails);
-    } catch (err) {
-      return next(err);
-    }
-  });
 
 module.exports = router;
