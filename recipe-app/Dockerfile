@@ -4,13 +4,16 @@ WORKDIR /app
 COPY client/ ./client
 RUN cd client && npm install && npm run build
 
-# Stage 2: Setup server and serve built frontend
+# Stage 2: Set up the server and serve client build
 FROM node:18
 
 WORKDIR /app
-COPY server ./server
-COPY --from=client-build /app/client/build ./server/client/build
 
+# Copy server and client build
+COPY server/ server/
+COPY --from=client-build /app/client/build server/client/build
+
+# Move into the server directory
 WORKDIR /app/server
 RUN npm install
 
