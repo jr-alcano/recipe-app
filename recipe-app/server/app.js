@@ -1,46 +1,34 @@
-const express = require('express');
-const cors = require('cors');
-const db = require('./db');
+// server/app.js
 
-const authRoutes = require('./routes/auth');
-const recipeRoutes = require('./routes/recipes');
-const { authenticateJWT } = require('./middleware/auth'); 
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+
+const authRoutes = require("./routes/auth");
+const recipeRoutes = require("./routes/recipes");
+const { authenticateJWT } = require("./middleware/auth");
 
 const app = express();
 
+// Set up dynamic CORS origin
+const CLIENT_ORIGIN = process.env.NODE_ENV === "production"
+  ? "https://<your-client-service>.up.railway.app" //replace
+  : "http://localhost:3000";
+
 app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true
+  origin: CLIENT_ORIGIN,
+  credentials: true
 }));
+
 app.use(express.json());
-app.use(authenticateJWT); // sets req.user if token is sent
+app.use(morgan("dev"));
+app.use(authenticateJWT);
 
-// root route to confirm API is up
-app.get('/', (req, res) => {
-  res.json({ message: 'API is working' });
+app.use("/auth", authRoutes);
+app.use("/recipes", recipeRoutes);
+
+app.get("/", (req, res) => {
+  res.json({ message: "API is working" });
 });
-
-// get all users
-app.get('/users', async (req, res, next) => {
-  try {
-    const results = await db.query('SELECT id, username, email, created_at FROM users');
-    return res.json(results.rows);
-  } catch (err) {
-    return next(err);
-  }
-});
-
-app.use('/auth', authRoutes);
-app.use('/recipes', recipeRoutes);
-
-/*/  DEBUG: Log registered routes AFTER routes are set up
-setTimeout(() => {
-  console.log("Registered routes:");
-  app._router.stack
-    .filter(r => r.route)
-    .forEach(r => {
-      console.log(r.route.path);
-    });
-}, 0);*/
 
 module.exports = app;
