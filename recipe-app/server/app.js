@@ -39,14 +39,23 @@ app.get("/", (req, res) => {
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "./client-build")));
 
-  app.get("*", (req, res) => {
-    if (req.originalUrl.startsWith("/auth") || req.originalUrl.startsWith("/recipes")) {
-      return res.status(404).json({ error: "Not found" });
+  app.get("*", (req, res, next) => {
+    try {
+      if (req.originalUrl.startsWith("/auth") || req.originalUrl.startsWith("/recipes")) {
+        return res.status(404).json({ error: "Not found" });
+      }
+      res.sendFile(path.join(__dirname, "./client-build", "index.html"));
+    } catch (err) {
+      next(err); // delegate to Express error handler
     }
-    res.sendFile(path.join(__dirname, "./client-build", "index.html"));
   });
+
 }
 
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: "Server error" });
+});
 
 
 module.exports = app;
