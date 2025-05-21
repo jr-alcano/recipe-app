@@ -12,7 +12,7 @@ const { authenticateJWT } = require("./middleware/auth");
 const app = express();
 
 const CLIENT_ORIGIN = process.env.NODE_ENV === "production"
-  ? "https://client-production-9aff.up.railway.app"
+  ? "https://recipe-app-seven-dusky.vercel.app"
   : "http://localhost:3000";
 
 app.use(cors({
