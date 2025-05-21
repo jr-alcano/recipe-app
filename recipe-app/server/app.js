@@ -3,7 +3,6 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const path = require("path");
 
 console.log("Starting to set up app.js");
 
@@ -51,26 +50,6 @@ app.get("/", (req, res) => {
   res.json({ message: "API is working" });
 });
 console.log("Root route registered");
-
-if (process.env.NODE_ENV === "production") {
-  const staticPath = path.join(__dirname, "./client-build");
-  console.log("Serving static files from:", staticPath);
-
-  app.use(express.static(staticPath));
-  console.log("Static middleware registered");
-
-  app.get("*", (req, res, next) => {
-    try {
-      if (req.originalUrl.startsWith("/auth") || req.originalUrl.startsWith("/recipes")) {
-        return res.status(404).json({ error: "Not found" });
-      }
-      res.sendFile(path.join(staticPath, "index.html"));
-    } catch (err) {
-      next(err); // delegate to Express error handler
-    }
-  });
-  console.log("Catch-all route registered");
-}
 
 // Global error handler
 app.use((err, req, res, next) => {
