@@ -11,15 +11,15 @@ const { authenticateJWT } = require("./middleware/auth");
 
 const app = express();
 
-// Set up dynamic CORS origin
-const corsOptions = {
-  origin: process.env.NODE_ENV === "production"
-    ? true 
-    : "http://localhost:3000",
-  credentials: true
-};
+const CLIENT_ORIGIN = process.env.NODE_ENV === "production"
+  ? "https://client-production-9aff.up.railway.app"
+  : "http://localhost:3000";
 
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: CLIENT_ORIGIN,
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(authenticateJWT);
