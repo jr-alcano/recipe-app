@@ -104,6 +104,9 @@ try {
   router.get('/:id/details', async (req, res, next) => {
     try {
       const { id } = req.params;
+      if (!id || isNaN(Number(id))) {
+        return res.status(400).json({ error: 'Invalid or missing recipe ID' });
+      }      
 
       const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/information`, {
         params: {
