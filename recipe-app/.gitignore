@@ -4,15 +4,6 @@ client/node_modules/
 server/node_modules/
 
 
-
-# Build output (React)
-client/build/
-
-# Coverage/test output
-coverage/
-client/coverage/
-server/coverage/
-
 # Log files
 *.log
 npm-debug.log*
