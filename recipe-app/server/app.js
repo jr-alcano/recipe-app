@@ -14,6 +14,8 @@ const app = express();
 const CLIENT_ORIGIN = process.env.NODE_ENV === "production"
   ? "https://recipe-app-seven-dusky.vercel.app"
   : "http://localhost:3000";
+  
+console.log("NODE_ENV:", process.env.NODE_ENV, "CLIENT_ORIGIN:", CLIENT_ORIGIN);
 
 app.use(cors({
   origin: CLIENT_ORIGIN,
