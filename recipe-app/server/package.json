@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --runInBand",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "echo 'No build needed in server'"
   },
   "keywords": [],
   "author": "",
